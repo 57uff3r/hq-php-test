@@ -1,0 +1,6 @@
+{% extends "views/layouts/basic.twig" %}
+
+{% block content %}
+    <h1>{{error.code}}</h1>
+    <div class="alert alert-danger">{{error.message}}</div>
+{% endblock %}
