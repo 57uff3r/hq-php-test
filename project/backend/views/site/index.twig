@@ -1,5 +1,112 @@
 {% extends "views/layouts/basic.twig" %}
 
 {% block content %}
-    <h1>It works!</h1>
+    <div class="container">
+
+      <div class="jumbotron">
+        <form method="POST" action="/">
+
+            <div class="form-horizontal">
+
+                <h3>Order</h3>
+
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Amount</label>
+                    <div class="col-sm-10">
+                        <div class="input-group">
+                            <input type="text" name="amount" class="form-control" value="67">
+                            <div class="input-group-addon">.00</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Currency</label>
+                    <div class="col-sm-10">
+                        <select class="form-control" name="currency">
+                            <option value="USD">USD</option>
+                            <option value="EUR">EUR</option>
+                            <option value="THB">THB</option>
+                            <option value="HKD">HKD</option>
+                            <option value="SGD">SGD</option>
+                            <option value="AUD">AUD</option>
+                        </select>
+                    </div>
+                </div>
+
+
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Your full name</label>
+                    <div class="col-sm-10">
+                        <input type="text" name="customer_name" class="form-control" value="John Smith">
+                    </div>
+                </div>
+
+            </div> <!-- /form-inline -->
+
+
+            <div class="form-horizontal">
+                <h3>Payment</h3>
+
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Cardholder name</label>
+                    <div class="col-sm-10">
+                        <input type="text" name="cardholder_name" class="form-control" value="Mr Cardholder">
+                    </div>
+                </div>
+
+
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Card number</label>
+                    <div class="col-sm-10">
+                        <input type="text"  name="card_number" class="form-control" value="4012888888881881">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Card CCV</label>
+                    <div class="col-sm-10">
+                        <input type="password" name="card_ccv" class="form-control" value="123">
+                    </div>
+                </div>
+
+
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Card expiration</label>
+                    <div class="col-xs-2">
+                        <select class="form-control" name="card_expiration_month">
+                            {% for i in 1..12 %}
+                                <option value="{{i}}">{{i}}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-xs-2">
+                        <select class="form-control" name="card_expiration_year">
+                            {% for i in 2015..2020 %}
+                                <option value="{{i}}">{{i}}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+
+            </div> <!-- /form-inline -->
+
+            <hr>
+
+            <button type="submit" class="btn btn-primary">Submit</button>
+
+        </form>
+      </div>
+
+    </div> <!-- /container -->
 {% endblock %}
+
+
+{# In order section:
+
+In payment section:
+Credit card holder name
+Credit card number
+Credit card expiration
+Credit card CCV
+Submit button #}

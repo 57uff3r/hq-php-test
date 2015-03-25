@@ -77,12 +77,14 @@ return [
             'globals' => [
                 'html' => 'CHtml'
             ],
-            'functions' => require(dirname(__FILE__).'/twigfunctions.php'),
+            'functions' => [
+            ],
             'filters' => [
                 'jencode' => 'CJSON::encode',
             ],
         ],
     ], // end of 'components'
 
-    'params' => require(dirname(__FILE__).'/params.php'),
+    'params' => [
+    ]
 ];

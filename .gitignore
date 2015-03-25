@@ -1,0 +1,13 @@
+# default section 
+
+assets/*
+!assets/.gitignore
+backend/runtime/*
+!protected/runtime/.gitignore
+protected/data/*.db
+themes/classic/views/
+
+
+# exclude local configs
+config/main.php
+config/console.php
