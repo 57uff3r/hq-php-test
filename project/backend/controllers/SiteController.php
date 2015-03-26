@@ -26,9 +26,10 @@ class SiteController extends Controller
                 $errors = $record->errors;
                 return $this->renderPartial('index', compact('values', 'errors', 'currencies'));
             }
+
+            $record->process();
         }
 
-        // var_dump($record->errors);
 
         return $this->renderPartial('index', compact('values', 'errors', 'currencies'));
     }

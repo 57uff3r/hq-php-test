@@ -1,0 +1,14 @@
+{
+    "name": "hq/php-round-1",
+    "description": "subj",
+    "license": "proprietary",
+    "require": {
+        "php": ">=5.3.0",
+        "ext-curl": "*",
+        "ext-json": "*",
+        "paypal/rest-api-sdk-php" : "0.5.*"
+    },
+    "config": {
+        "vendor-dir": "backend/vendors"
+    }
+}

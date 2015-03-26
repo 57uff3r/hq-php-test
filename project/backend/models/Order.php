@@ -5,7 +5,24 @@
  * @author Andrey Korchak <ak@budist.ru>
  */
 
+use PayPal\Rest\ApiContext;
+use PayPal\Auth\OAuthTokenCredential;
+
+use PayPal\Api\Amount;
+use PayPal\Api\Details;
+use PayPal\Api\Item;
+use PayPal\Api\ItemList;
+use PayPal\Api\CreditCard;
+use PayPal\Api\Payer;
+use PayPal\Api\Payment;
+use PayPal\Api\FundingInstrument;
+use PayPal\Api\Transaction;
+
+// AfkvVJgl9gtLBN_piQrWJwc7lYyqYal7RqoJ2Lxa7UR5NlKIemKP6AAdx63MGb2cQ32Bg_hsmruUcHeK
+// EGs4lYALx5vB6t6SDPDQ6RgLSqKhTqxenQREi7D8yEKHF9OfaR03WwWp9QbnCtzxOexywlTFE6u4SH2L
+
 Yii::import('ext.ECCValidator');
+
 class Order extends CActiveRecord
 {
 
@@ -79,7 +96,7 @@ class Order extends CActiveRecord
             ['amount, currency, customer_name, cardholder_name, card_number, card_ccv,
                 card_expiration_month, card_expiration_year', 'required'],
             ['customer_name, cardholder_name', 'length', 'min' => 10, 'max' => 100],
-            ['customer_name, cardholder_name', 'match', 'pattern' => '/^[a-zA-Z\s]+$/',
+            ['customer_name, cardholder_name', 'match', 'pattern' => "/^[a-zA-Z\s]+$/",
                 'allowEmpty' => false, 'message' => 'This field can only contain word characters'],
 
             // order data validation
@@ -91,7 +108,8 @@ class Order extends CActiveRecord
             ['card_ccv', 'numerical', 'allowEmpty' => false, 'integerOnly' => true],
             ['card_ccv', 'length', 'is' => 3],
             ['card_number', 'cardAndCurrecnyValidator'],
-            ['card_expiration_year', 'cardExpirationValidator']
+            ['card_expiration_year', 'cardExpirationValidator'],
+            ['cardholder_name', 'match', 'pattern' => "/^([a-zA-Z]+)\s+([a-zA-Z]+)$/", 'allowEmpty' => false]
         ];
     }
 
@@ -150,6 +168,20 @@ class Order extends CActiveRecord
         }
 
         return true;
+    }
+
+
+    public function process()
+    {
+        $apiContext = new ApiContext(
+            new OAuthTokenCredential(
+                Yii::app()->params['paypalClientId'],
+                Yii::app()->params['paypalSecret']
+            )
+        );
+
+
+
     }
 
 }

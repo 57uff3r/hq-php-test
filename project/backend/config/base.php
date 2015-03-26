@@ -3,6 +3,9 @@
  * Common project settings
  */
 
+define('PP_CONFIG_PATH', dirname(__FILE__).DIRECTORY_SEPARATOR);
+require_once dirname(__FILE__).DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'vendors/autoload.php';
+
 date_default_timezone_set('UTC');
 
 return [
@@ -86,5 +89,7 @@ return [
     ], // end of 'components'
 
     'params' => [
+        'paypalClientId'    => 'AfkvVJgl9gtLBN_piQrWJwc7lYyqYal7RqoJ2Lxa7UR5NlKIemKP6AAdx63MGb2cQ32Bg_hsmruUcHeK',
+        'paypalSecret'      => 'EGs4lYALx5vB6t6SDPDQ6RgLSqKhTqxenQREi7D8yEKHF9OfaR03WwWp9QbnCtzxOexywlTFE6u4SH2L    '
     ]
 ];
