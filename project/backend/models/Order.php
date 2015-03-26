@@ -9,6 +9,7 @@ use PayPal\Rest\ApiContext;
 use PayPal\Auth\OAuthTokenCredential;
 
 use PayPal\Api\Amount;
+use PayPal\Api\AmountDetails;
 use PayPal\Api\Details;
 use PayPal\Api\Item;
 use PayPal\Api\ItemList;
@@ -17,9 +18,8 @@ use PayPal\Api\Payer;
 use PayPal\Api\Payment;
 use PayPal\Api\FundingInstrument;
 use PayPal\Api\Transaction;
+use PayPal\Api\PaymentExecution;
 
-// AfkvVJgl9gtLBN_piQrWJwc7lYyqYal7RqoJ2Lxa7UR5NlKIemKP6AAdx63MGb2cQ32Bg_hsmruUcHeK
-// EGs4lYALx5vB6t6SDPDQ6RgLSqKhTqxenQREi7D8yEKHF9OfaR03WwWp9QbnCtzxOexywlTFE6u4SH2L
 
 Yii::import('ext.ECCValidator');
 
@@ -53,6 +53,27 @@ class Order extends CActiveRecord
 
 
     /**
+     * Allowed gateways
+     *
+     */
+    const GATEWAY_PAYPAL = 'paypal';
+    const GATEWAY_BRAINTREE = 'braintree';
+
+    public static $allowedGateways = [
+        0 => self::GATEWAY_PAYPAL,
+        1 => self::GATEWAY_BRAINTREE,
+    ];
+
+
+    /**
+     * Status codes for internal usage
+     *
+     */
+    const CODE_DONE = 1;
+    const CODE_ERROR = 2;
+
+
+    /**
      * Model properties
      *
      */
@@ -65,6 +86,13 @@ class Order extends CActiveRecord
             $card_expiration_month,
             $card_expiration_year,
             $card_expiration;
+
+    /**
+     * Extra params for DB
+     * @note I didn't make this properies private cuz ORM needs them to be public
+     */
+    public $gateway_answer,
+           $used_gateway;
 
 
     /**
@@ -171,7 +199,29 @@ class Order extends CActiveRecord
     }
 
 
+    /**
+     * Process payments
+     *
+     * @return int status code
+     */
     public function process()
+    {
+
+        if (in_array($this->currency, [self::CURR_USD, self::CURR_AUD, self::CURR_EUR])) {
+            return $this->processPaypal();
+        }
+
+        return self::CODE_ERROR;
+
+    }
+
+
+    /**
+     * Process payment with Paypal
+     *
+     * @return int result code
+     */
+    private function processPaypal()
     {
         $apiContext = new ApiContext(
             new OAuthTokenCredential(
@@ -180,8 +230,110 @@ class Order extends CActiveRecord
             )
         );
 
+        $ccType = $this->detectCCType();
+        $ccType = $this->mapCCTypeToPaypalTypes($ccType);
+
+        $name = explode(' ', $this->cardholder_name);
+
+        // Prevent SSL errors
+        PPHttpConfig::$DEFAULT_CURL_OPTS[CURLOPT_SSLVERSION] = 4;
+
+        // Setup and process payment
+        $card = new CreditCard();
+        $card->setType($ccType);
+        $card->setNumber($this->card_number);
+        $card->setExpire_month($this->card_expiration_month);
+        $card->setExpire_year($this->card_expiration_year);
+        $card->setCvv2($this->card_ccv);
+        $card->setFirst_name(trim($name[0]));
+        $card->setLast_name(trim($name[1]));
 
 
+        $fi = new FundingInstrument();
+        $fi->setCredit_card($card);
+
+        $payer = new Payer();
+        $payer->setPayment_method('credit_card');
+        $payer->setFunding_instruments(array($fi));
+
+        $amountDetails = new AmountDetails();
+        $amountDetails->setSubtotal($this->amount);
+        $amountDetails->setTax('0');
+        $amountDetails->setShipping('0');
+
+        $amount = new Amount();
+        $amount->setCurrency($this->currency);
+        $amount->setTotal($this->amount);
+        $amount->setDetails($amountDetails);
+
+        $transaction = new Transaction();
+        $transaction->setAmount($amount);
+        $transaction->setDescription('This is the payment transaction description.');
+
+        $payment = new Payment();
+        $payment->setIntent('sale');
+        $payment->setPayer($payer);
+        $payment->setTransactions(array($transaction));
+
+
+        try {
+            $payment->create($apiContext);
+
+            // store order data
+            $this->used_gateway   = self::GATEWAY_PAYPAL;
+            $this->gateway_answer = json_encode(['id' => $payment->id]);
+
+            $this->save(false);
+
+        } catch (Exception $ex) {
+            return self::CODE_ERROR;
+        }
+
+        return self::CODE_DONE;
+    }
+
+
+    /**
+     * Detect CC type
+     *
+     * @return mixed
+     */
+    private function detectCCType()
+    {
+        $cc = new ECCValidator();
+        foreach (ECCValidator::$patterns as $type => $pattern)  {
+            $cc->format  = [$type];
+            if ($cc->validateNumber($this->card_number)) {
+                return $type;
+            }
+        }
+
+        return false;
+    }
+
+
+    /**
+     * Map internal CC types to PayPal types
+     *
+     * @param string $type
+     *
+     * @return mixed
+     */
+    private function mapCCTypeToPaypalTypes($type)
+    {
+        $map = [
+            ECCValidator::MASTERCARD        => 'mastercard',
+            ECCValidator::VISA              => 'visa',
+            ECCValidator::AMERICAN_EXPRESS  => 'amex',
+            ECCValidator::DISCOVER          => 'discover'
+        ];
+
+
+        if (!array_key_exists($type, $map)) {
+            throw new Exception("Paypal doesn't suppost this type of CC: {$type}", 1);
+        }
+
+        return $map[$type];
     }
 
 }

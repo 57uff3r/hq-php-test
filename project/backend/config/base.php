@@ -90,6 +90,6 @@ return [
 
     'params' => [
         'paypalClientId'    => 'AfkvVJgl9gtLBN_piQrWJwc7lYyqYal7RqoJ2Lxa7UR5NlKIemKP6AAdx63MGb2cQ32Bg_hsmruUcHeK',
-        'paypalSecret'      => 'EGs4lYALx5vB6t6SDPDQ6RgLSqKhTqxenQREi7D8yEKHF9OfaR03WwWp9QbnCtzxOexywlTFE6u4SH2L    '
+        'paypalSecret'      => 'EGs4lYALx5vB6t6SDPDQ6RgLSqKhTqxenQREi7D8yEKHF9OfaR03WwWp9QbnCtzxOexywlTFE6u4SH2L'
     ]
 ];

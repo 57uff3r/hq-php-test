@@ -17,6 +17,7 @@ class SiteController extends Controller
         $currencies = Order::$currencies;
         $values     = $_POST;
         $errors     = [];
+        $result     = 0;
 
         if ($values) {
             $record             = new Order();
@@ -24,14 +25,13 @@ class SiteController extends Controller
 
             if (!$record->validate()) {
                 $errors = $record->errors;
-                return $this->renderPartial('index', compact('values', 'errors', 'currencies'));
+                return $this->renderPartial('index', compact('values', 'errors', 'currencies', 'result'));
             }
 
-            $record->process();
+            $result = $record->process();
         }
 
-
-        return $this->renderPartial('index', compact('values', 'errors', 'currencies'));
+        return $this->renderPartial('index', compact('values', 'errors', 'currencies', 'result'));
     }
 
     /**

@@ -26,17 +26,17 @@ class PPHttpConnection
 		}
 		$this->httpConfig = $httpConfig;
 		$this->logger = new PPLoggingManager(__CLASS__);
-	}	
+	}
 
 	private function getHttpHeaders() {
-		
+
 		$ret = array();
 		foreach($this->httpConfig->getHeaders() as $k=>$v) {
 			$ret[] = "$k: $v";
 		}
 		return $ret;
 	}
-	
+
 	/**
 	 * Executes an HTTP request
 	 *
@@ -44,15 +44,15 @@ class PPHttpConnection
 	 * @throws PPConnectionException
 	 */
 	public function execute($data) {
-		$this->logger->fine("Connecting to " . $this->httpConfig->getUrl());			
+		$this->logger->fine("Connecting to " . $this->httpConfig->getUrl());
 		$this->logger->fine("Payload " . $data);
 
 		$ch = curl_init($this->httpConfig->getUrl());
-		curl_setopt_array($ch, $this->httpConfig->getCurlOptions());		
-		curl_setopt($ch, CURLOPT_URL, $this->httpConfig->getUrl());		
+		curl_setopt_array($ch, $this->httpConfig->getCurlOptions());
+		curl_setopt($ch, CURLOPT_URL, $this->httpConfig->getUrl());
 		curl_setopt($ch, CURLOPT_HEADER, false);
 		curl_setopt($ch, CURLOPT_HTTPHEADER, $this->getHttpHeaders());
-		
+
 		switch($this->httpConfig->getMethod()) {
 			case 'POST':
 				curl_setopt($ch, CURLOPT_POST, true);
@@ -92,12 +92,12 @@ class PPHttpConnection
 		curl_close($ch);
 
 		if(in_array($httpStatus, self::$retryCodes)) {
-			$ex = new PPConnectionException($this->httpConfig->getUrl() , 
+			$ex = new PPConnectionException($this->httpConfig->getUrl() ,
 					"Got Http response code $httpStatus when accessing {$this->httpConfig->getUrl()}. Retried $retries times.");
 			$ex->setData($result);
 			throw $ex;
 		} else if($httpStatus < 200 || $httpStatus >=300) {
-			$ex = new PPConnectionException($this->httpConfig->getUrl() , 
+			$ex = new PPConnectionException($this->httpConfig->getUrl() ,
 					"Got Http response code $httpStatus when accessing {$this->httpConfig->getUrl()}.");
 			$ex->setData($result);
 			throw $ex;

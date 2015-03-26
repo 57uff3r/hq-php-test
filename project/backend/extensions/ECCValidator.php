@@ -45,7 +45,7 @@ class ECCValidator extends CValidator{
      * @var array holds the regex patterns to check for valid
      * Credit Card number prefixes
      */
-    protected $patterns = array(
+    public static $patterns = array(
         self::MASTERCARD=>'/^5[1-5][0-9]{14}$/',
         self::VISA=>'/^4[0-9]{12}([0-9]{3})?$/',
         self::AMERICAN_EXPRESS=>'/^3[47][0-9]{13}$/',
@@ -152,7 +152,7 @@ class ECCValidator extends CValidator{
      */
     protected function checkFormat($cardNumber)
     {
-        return preg_match('/^[0-9]+$/',$cardNumber) && preg_match( $this->patterns[$this->format], $cardNumber );
+        return preg_match('/^[0-9]+$/',$cardNumber) && preg_match( self::$patterns[$this->format], $cardNumber );
     }
     /**
      *
@@ -193,16 +193,16 @@ class ECCValidator extends CValidator{
     protected function checkType(){
 
         if(is_scalar($this->format)){
-            return array_key_exists($this->format, $this->patterns);
+            return array_key_exists($this->format, self::$patterns);
         }
         else if (is_array($this->format)){
             $pattern = array();
             foreach($this->format as $f){
-                if(!array_key_exists($f, $this->patterns)) return false;
-                $pattern[] = substr($this->patterns[$f], 2,strlen($this->patterns[$f])-4);
+                if(!array_key_exists($f, self::$patterns)) return false;
+                $pattern[] = substr(self::$patterns[$f], 2,strlen(self::$patterns[$f])-4);
             }
             $this->format = 'custom';
-            $this->patterns[$this->format] = '/^('.join('|',$pattern).')$/';
+            self::$patterns[$this->format] = '/^('.join('|',$pattern).')$/';
             return true;
         }
         return false;

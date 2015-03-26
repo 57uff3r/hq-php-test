@@ -4,6 +4,14 @@
     <div class="container">
 
       <div class="jumbotron">
+        {% if result %}
+            {% if result == 1 %}
+                <div class="alert alert-success" role="alert">You order successfully completed</div>
+            {% else %}
+                <div class="alert alert-danger" role="alert">Error! Your order hasn't completed</div>
+            {% endif %}
+        {% endif %}
+
         <form method="POST" action="/">
 
             <div class="form-horizontal">
