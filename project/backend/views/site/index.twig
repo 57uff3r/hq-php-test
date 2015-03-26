@@ -10,35 +10,55 @@
 
                 <h3>Order</h3>
 
-                <div class="form-group">
+                <div class="form-group{% if errors.amount %} has-error{% endif %}">
                     <label class="col-sm-2 control-label">Amount</label>
                     <div class="col-sm-10">
                         <div class="input-group">
-                            <input type="text" name="amount" class="form-control" value="67">
+                            <input type="text" name="amount" class="form-control" value="{{values.amount}}">
                             <div class="input-group-addon">.00</div>
                         </div>
+
+                        {% if errors.amount %}
+                            {% for e in errors.amount %}
+                                <span  class="help-block">{{e}}</span>
+                            {% endfor %}
+                        {% endif %}
                     </div>
                 </div>
 
-                <div class="form-group">
+                <div class="form-group{% if errors.currency %} has-error{% endif %}">
                     <label class="col-sm-2 control-label">Currency</label>
                     <div class="col-sm-10">
                         <select class="form-control" name="currency">
-                            <option value="USD">USD</option>
-                            <option value="EUR">EUR</option>
-                            <option value="THB">THB</option>
-                            <option value="HKD">HKD</option>
-                            <option value="SGD">SGD</option>
-                            <option value="AUD">AUD</option>
+                            {% for c in currencies %}
+                                {% if c == values.currency %}
+                                    <option value="{{c}}" selected>{{c}}</option>
+                                {% else %}
+                                    <option value="{{c}}">{{c}}</option>
+                                {% endif %}
+                            {% endfor %}
                         </select>
+
+                        {% if errors.currency %}
+                            {% for e in errors.currency %}
+                                <span  class="help-block">{{e}}</span>
+                            {% endfor %}
+                        {% endif %}
+
                     </div>
                 </div>
 
 
-                <div class="form-group">
+                <div class="form-group{% if errors.customer_name %} has-error{% endif %}">
                     <label class="col-sm-2 control-label">Your full name</label>
                     <div class="col-sm-10">
-                        <input type="text" name="customer_name" class="form-control" value="John Smith">
+                        <input type="text" name="customer_name" class="form-control" value="{{values.customer_name}}">
+
+                        {% if errors.customer_name %}
+                            {% for e in errors.customer_name %}
+                                <span  class="help-block">{{e}}</span>
+                            {% endfor %}
+                        {% endif %}
                     </div>
                 </div>
 
@@ -48,45 +68,82 @@
             <div class="form-horizontal">
                 <h3>Payment</h3>
 
-                <div class="form-group">
+                <div class="form-group{% if errors.cardholder_name %} has-error{% endif %}">
                     <label class="col-sm-2 control-label">Cardholder name</label>
                     <div class="col-sm-10">
-                        <input type="text" name="cardholder_name" class="form-control" value="Mr Cardholder">
+                        <input type="text" name="cardholder_name" class="form-control" value="{{values.cardholder_name}}">
+
+                        {% if errors.cardholder_name %}
+                            {% for e in errors.cardholder_name %}
+                                <span  class="help-block">{{e}}</span>
+                            {% endfor %}
+                        {% endif %}
                     </div>
                 </div>
 
 
-                <div class="form-group">
+                <div class="form-group{% if errors.card_number %} has-error{% endif %}">
                     <label class="col-sm-2 control-label">Card number</label>
                     <div class="col-sm-10">
-                        <input type="text"  name="card_number" class="form-control" value="4012888888881881">
+                        <input type="text"  name="card_number" class="form-control" value="{{values.card_number}}">
+
+                        {% if errors.card_number %}
+                            {% for e in errors.card_number %}
+                                <span  class="help-block">{{e}}</span>
+                            {% endfor %}
+                        {% endif %}
+
                     </div>
                 </div>
 
-                <div class="form-group">
+                <div class="form-group{% if errors.card_ccv %} has-error{% endif %}">
                     <label class="col-sm-2 control-label">Card CCV</label>
                     <div class="col-sm-10">
-                        <input type="password" name="card_ccv" class="form-control" value="123">
+                        <input type="password" name="card_ccv" class="form-control" value="{{values.card_ccv}}">
+
+                        {% if errors.card_ccv %}
+                            {% for e in errors.card_ccv %}
+                                <span  class="help-block">{{e}}</span>
+                            {% endfor %}
+                        {% endif %}
+
                     </div>
                 </div>
 
 
-                <div class="form-group">
+                <div class="form-group{% if errors.card_expiration %} has-error{% endif %}">
                     <label class="col-sm-2 control-label">Card expiration</label>
-                    <div class="col-xs-2">
+                    <div class="col-xs-5">
                         <select class="form-control" name="card_expiration_month">
                             {% for i in 1..12 %}
-                                <option value="{{i}}">{{i}}</option>
+                                {% if i == values.card_expiration_month %}
+                                    <option value="{{i}}" selected>{{i}}</option>
+                                {% else %}
+                                    <option value="{{i}}">{{i}}</option>
+                                {% endif %}
                             {% endfor %}
                         </select>
                     </div>
-                    <div class="col-xs-2">
+
+                    <div class="col-xs-5">
                         <select class="form-control" name="card_expiration_year">
                             {% for i in 2015..2020 %}
-                                <option value="{{i}}">{{i}}</option>
+                                {% if i == values.card_expiration_year %}
+                                    <option value="{{i}}" selected>{{i}}</option>
+                                {% else %}
+                                    <option value="{{i}}">{{i}}</option>
+                                {% endif %}
                             {% endfor %}
                         </select>
+
+
+                        {% if errors.card_expiration %}
+                            {% for e in errors.card_expiration %}
+                                <span  class="help-block">{{e}}</span>
+                            {% endfor %}
+                        {% endif %}
                     </div>
+
                 </div>
 
             </div> <!-- /form-inline -->
@@ -101,12 +158,3 @@
     </div> <!-- /container -->
 {% endblock %}
 
-
-{# In order section:
-
-In payment section:
-Credit card holder name
-Credit card number
-Credit card expiration
-Credit card CCV
-Submit button #}

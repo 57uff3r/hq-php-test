@@ -14,8 +14,23 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
-        // var_dump($_POST);
-        $this->renderPartial('index');
+        $currencies = Order::$currencies;
+        $values     = $_POST;
+        $errors     = [];
+
+        if ($values) {
+            $record             = new Order();
+            $record->attributes = $values;
+
+            if (!$record->validate()) {
+                $errors = $record->errors;
+                return $this->renderPartial('index', compact('values', 'errors', 'currencies'));
+            }
+        }
+
+        // var_dump($record->errors);
+
+        return $this->renderPartial('index', compact('values', 'errors', 'currencies'));
     }
 
     /**
