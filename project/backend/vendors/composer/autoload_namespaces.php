@@ -7,4 +7,5 @@ $baseDir = dirname(dirname($vendorDir));
 
 return array(
     'PayPal' => array($vendorDir . '/paypal/rest-api-sdk-php/lib'),
+    'Braintree' => array($vendorDir . '/braintree/braintree_php/lib'),
 );
