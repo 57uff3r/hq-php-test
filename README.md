@@ -21,4 +21,9 @@
     - Server root for this app has to be in www dir
 - Yes, my code a bit straightforward and dirty (eg composer packages in repo, all logic in model file etc - I wrote this code after my current job :) )
 
+# How to store CC info
+- Encrypted
+- Unique crypto key for every record
+- Store keys separate (on another DB server and they can be encrypted too)
+
 Have a good friday && weekends :)
