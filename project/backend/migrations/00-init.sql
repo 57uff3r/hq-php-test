@@ -4,7 +4,7 @@ CREATE TABLE IF NOT EXISTS `orders` (
   `currency` varchar(4) NOT NULL,
   `customer_name` varchar(255) NOT NULL,
   `cardholder_name` varchar(255) NOT NULL,
-  `card_number` int(16) NOT NULL,
+  `card_number` varchar(20) NOT NULL,
   `card_ccv` int(3) NOT NULL,
   `card_expiration_month` int(2) NOT NULL,
   `card_expiration_year` int(4) NOT NULL,

@@ -23,7 +23,7 @@ use PayPal\Api\PaymentExecution;
 
 Yii::import('ext.ECCValidator');
 
-Yii::import('application.vendors.braintree.braintree_php.lib.Braintree');
+include(Yii::app()->basePath.'/vendors/braintree/braintree_php/lib/Braintree.php');
 
 class Order extends CActiveRecord
 {
