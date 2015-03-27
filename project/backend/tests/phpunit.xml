@@ -1,0 +1,13 @@
+<phpunit bootstrap="bootstrap.php"
+         colors="true"
+         convertErrorsToExceptions="true"
+         convertNoticesToExceptions="true"
+         convertWarningsToExceptions="true"
+         stopOnFailure="false">
+
+    <!-- <selenium> -->
+        <!-- <browser name="Firefox" browser="*firefox" /> -->
+        <!-- <browser name="Google Chrome" browser="*chrome" /> -->
+    <!-- </selenium> -->
+
+</phpunit>

@@ -23,6 +23,8 @@ use PayPal\Api\PaymentExecution;
 
 Yii::import('ext.ECCValidator');
 
+Yii::import('application.vendors.braintree.braintree_php.lib.Braintree');
+
 class Order extends CActiveRecord
 {
 
@@ -202,6 +204,9 @@ class Order extends CActiveRecord
     /**
      * Process payments
      *
+     * @note will be better to use Factory here, but I puted all
+     * code in one file to save the time
+     *
      * @return int status code
      */
     public function process()
@@ -209,6 +214,8 @@ class Order extends CActiveRecord
 
         if (in_array($this->currency, [self::CURR_USD, self::CURR_AUD, self::CURR_EUR])) {
             return $this->processPaypal();
+        } else {
+            return $this->processBraintree();
         }
 
         return self::CODE_ERROR;
@@ -217,7 +224,46 @@ class Order extends CActiveRecord
 
 
     /**
-     * Process payment with Paypal
+     * Process order with Braintree
+     *
+     * @return int status code
+     */
+    private function processBraintree()
+    {
+        Braintree_Configuration::environment(Yii::app()->params['braintreeEnv']);
+        Braintree_Configuration::merchantId(Yii::app()->params['braintreeMerchantId']);
+        Braintree_Configuration::publicKey(Yii::app()->params['braintreePublicKey']);
+        Braintree_Configuration::privateKey(Yii::app()->params['braintreePrivateKey']);
+
+        $result = Braintree_Transaction::sale([
+            'amount'            => $this->amount,
+            'merchantAccountId' => Yii::app()->params['brainTreeMechantAccounts'][$this->currency],
+            'creditCard'    => [
+                'number'            => $this->card_number,
+                'expirationMonth'   => $this->card_expiration_month,
+                'expirationYear'    => $this->card_expiration_year
+            ]
+        ]);
+
+
+        if ($result->success) {
+
+            // store order data
+            $this->used_gateway   = self::GATEWAY_BRAINTREE;
+            $this->gateway_answer = json_encode(['id' => $result->transaction->id]);
+
+            $this->save(false);
+
+            return self::CODE_DONE;
+        }
+
+
+        return self::CODE_ERROR;
+    }
+
+
+    /**
+     * Process order with Paypal
      *
      * @return int result code
      */

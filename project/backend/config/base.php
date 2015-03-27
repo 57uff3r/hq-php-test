@@ -89,7 +89,25 @@ return [
     ], // end of 'components'
 
     'params' => [
-        'paypalClientId'    => 'AfkvVJgl9gtLBN_piQrWJwc7lYyqYal7RqoJ2Lxa7UR5NlKIemKP6AAdx63MGb2cQ32Bg_hsmruUcHeK',
-        'paypalSecret'      => 'EGs4lYALx5vB6t6SDPDQ6RgLSqKhTqxenQREi7D8yEKHF9OfaR03WwWp9QbnCtzxOexywlTFE6u4SH2L'
+        /**
+         * Paypal stuff
+         *
+         */
+        'paypalClientId'            => 'AfkvVJgl9gtLBN_piQrWJwc7lYyqYal7RqoJ2Lxa7UR5NlKIemKP6AAdx63MGb2cQ32Bg_hsmruUcHeK',
+        'paypalSecret'              => 'EGs4lYALx5vB6t6SDPDQ6RgLSqKhTqxenQREi7D8yEKHF9OfaR03WwWp9QbnCtzxOexywlTFE6u4SH2L',
+
+        /**
+         * Braintree stuf
+         *
+         */
+        'braintreeEnv'              => 'sandbox',
+        'braintreeMerchantId'       => 'hhd5hvcvhdyyqwny',
+        'braintreePublicKey'        => 'wswnwnkghmrzgyqs',
+        'braintreePrivateKey'       => '405b0e496af848bddad3f5c03dbdb4bb',
+        'brainTreeMechantAccounts'  => [
+            'THB'       => 'hq-test-thb',
+            'SGD'       => 'hq-test-sgd',
+            'HKD'       => 'hq-tesh-hkd'
+        ]
     ]
 ];
